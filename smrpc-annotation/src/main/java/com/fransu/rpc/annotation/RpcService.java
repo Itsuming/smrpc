@@ -9,7 +9,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 服务提供者注解
+ * @BelongsProject: smrpc
+ * @BelongsPackage: com.fransu.rpc.annotation
+ * @Author: franksu
+ * @CreateTime: 2023-12-18  09:15
+ * @Description: smrpc服务提供者注解
+ * @Version: 1.0
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
