@@ -1,4 +1,4 @@
-package com.fransu.rpc.annotation;
+package com.franksu.rpc.annotation;
 
 import org.springframework.stereotype.Component;
 
