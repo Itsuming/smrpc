@@ -1,9 +1,9 @@
-package com.franksu.rpc.common.reference;
+package com.franksu.rpc.common.scanner.reference;
 
 import com.franksu.rpc.annotation.RpcReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.franksu.rpc.common.ClassScanner;
+import com.franksu.rpc.common.scanner.ClassScanner;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

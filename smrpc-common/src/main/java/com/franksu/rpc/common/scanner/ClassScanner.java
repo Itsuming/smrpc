@@ -1,4 +1,4 @@
-package com.franksu.rpc.common;
+package com.franksu.rpc.common.scanner;
 
 import java.io.File;
 import java.io.FileFilter;

@@ -1,8 +1,8 @@
 package com.franksu.rpc.test.scanner;
 
-import com.franksu.rpc.common.ClassScanner;
-import com.franksu.rpc.common.reference.RpcReferenceScanner;
-import com.franksu.rpc.common.server.RpcServiceScanner;
+import com.franksu.rpc.common.scanner.ClassScanner;
+import com.franksu.rpc.common.scanner.reference.RpcReferenceScanner;
+import com.franksu.rpc.common.scanner.server.RpcServiceScanner;
 import org.junit.Test;
 
 import java.io.IOException;

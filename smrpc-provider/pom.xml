@@ -6,22 +6,13 @@
         <artifactId>smrpc</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>smrpc-test</artifactId>
-    <name>Archetype - smrpc-test</name>
+    <artifactId>smrpc-provider</artifactId>
+    <name>Archetype - smrpc-provider</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
             <groupId>com.franksu</groupId>
             <artifactId>smrpc-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.franksu</groupId>
-            <artifactId>smrpc-provider</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

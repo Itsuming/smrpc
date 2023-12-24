@@ -11,6 +11,9 @@
     <module>smrpc-annotation</module>
     <module>smrpc-common</module>
     <module>smrpc-test</module>
+    <module>smrpc-provider</module>
+      <module>smrpc-protocol</module>
+      <module>smrpc-constants</module>
   </modules>
 
   <properties>
