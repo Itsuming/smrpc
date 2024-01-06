@@ -22,13 +22,22 @@ public enum RpcType {
      */
     HEARTBEAT(3);
 
-    private final int value;
+    private final int type;
 
     RpcType(int value) {
-        this.value = value;
+        this.type = value;
     }
 
-    public int getValue() {
-        return value;
+    public int getType() {
+        return type;
+    }
+
+    public static RpcType findByType(int type) {
+        for (RpcType rpcType : RpcType.values()) {
+            if (rpcType.getType() == type) {
+                return rpcType;
+            }
+        }
+        return null;
     }
 }

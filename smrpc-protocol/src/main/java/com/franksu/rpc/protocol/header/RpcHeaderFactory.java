@@ -18,7 +18,7 @@ public class RpcHeaderFactory {
         Long requestId = IdFactory.getId();
         rpcHeader.setRequestId(requestId);
         rpcHeader.setMagic(RpcConstants.MAGIC);
-        rpcHeader.setMsgType((byte) RpcType.REQUEST.getValue());
+        rpcHeader.setMsgType((byte) RpcType.REQUEST.getType());
         rpcHeader.setStatus((byte) 0x1);
         rpcHeader.setSerializationType(serializationType);
 

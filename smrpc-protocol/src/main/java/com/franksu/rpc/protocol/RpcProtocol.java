@@ -24,4 +24,20 @@ public class RpcProtocol<T> implements Serializable {
      * 消息体
      */
     private T body;
+
+    public RpcHeader getRpcHeader() {
+        return rpcHeader;
+    }
+
+    public void setRpcHeader(RpcHeader rpcHeader) {
+        this.rpcHeader = rpcHeader;
+    }
+
+    public T getBody() {
+        return body;
+    }
+
+    public void setBody(T body) {
+        this.body = body;
+    }
 }
