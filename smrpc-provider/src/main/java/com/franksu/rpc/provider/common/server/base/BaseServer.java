@@ -73,6 +73,7 @@ public class BaseServer implements Server {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture channelFuture = serverBootstrap.bind(host, port).sync();
             logger.info("server started on {} : {}", host, port);
+            logger.info(handlerMap.toString());
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             logger.error("RPC server start error", e);

@@ -29,7 +29,7 @@ public class SerializationUtils {
             return str;
         }
         StringBuilder paddingStr = new StringBuilder(str);
-        int paddingCount = str.length() - MAX_SERIALIZATION_TYPE_COUNT;
+        int paddingCount = MAX_SERIALIZATION_TYPE_COUNT - str.length();
         IntStream.range(0, paddingCount).forEach(i ->{
             paddingStr.append(PADDING_STRING);
         });

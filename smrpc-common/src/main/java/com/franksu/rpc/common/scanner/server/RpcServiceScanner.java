@@ -1,6 +1,7 @@
 package com.franksu.rpc.common.scanner.server;
 
 import com.franksu.rpc.annotation.RpcService;
+import com.franksu.rpc.common.helper.RpcServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.franksu.rpc.common.scanner.ClassScanner;
@@ -42,7 +43,8 @@ public class RpcServiceScanner extends ClassScanner {
                     // LOGGER.info("version===>>> " + rpcService.version());
                     // LOGGER.info("group===>>> " + rpcService.group());
                     String serviceName = getServiceName(rpcService);
-                    String key = serviceName.concat(rpcService.version()).concat(rpcService.group());
+                    // String key = serviceName.concat(rpcService.version()).concat(rpcService.group());
+                    String key = RpcServiceHelper.buildServiceKey(serviceName, rpcService.version(), rpcService.group());
                     handlerMap.put(key, clazz.newInstance());
                 }
             } catch (Exception e) {

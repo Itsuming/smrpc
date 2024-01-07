@@ -46,6 +46,9 @@ public class RpcDecoder extends ByteToMessageDecoder implements RpcCodec {
         String serializationType = SerializationUtils.removeBlank(serializationTypeByteBuf.toString(CharsetUtil.UTF_8));
 
         int dataLen = in.readInt();
+
+        int bytes = in.readableBytes();
+        System.out.println(bytes);
         if (in.readableBytes() < dataLen) {
             in.resetReaderIndex();
             return;
