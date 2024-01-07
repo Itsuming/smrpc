@@ -1,5 +1,6 @@
 package com.franksu.rpc.test.provider.single;
 
+import com.franksu.rpc.constants.RpcConstants;
 import com.franksu.rpc.provider.RpcSingleServer;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import org.junit.Test;
 public class RpcSingleServerTest {
     @Test
     public void startRpcSingleServer() {
-        RpcSingleServer rpcSingleServer = new RpcSingleServer("127.0.0.1:27880", "com.franksu.rpc.test");
+        RpcSingleServer rpcSingleServer = new RpcSingleServer("127.0.0.1:27880", "com.franksu.rpc.test", RpcConstants.REFLECT_TYPE_CGLIB);
         rpcSingleServer.startNettyServer();
     }
 }

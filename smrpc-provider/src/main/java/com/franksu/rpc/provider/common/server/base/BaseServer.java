@@ -46,12 +46,18 @@ public class BaseServer implements Server {
      */
     protected Map<String, Object> handlerMap = new HashMap<>();
 
-    public BaseServer(String serverAddress) {
+    /**
+     * 反射方式
+     */
+    private String reflectType;
+
+    public BaseServer(String serverAddress, String reflectType) {
         if (StringUtils.isNotEmpty(serverAddress)) {
             String[] serverArray = serverAddress.split(":");
             this.host = serverArray[0];
             this.port = Integer.parseInt(serverArray[1]);
         }
+        this.reflectType = reflectType;
     }
     @Override
     public void startNettyServer() {
@@ -67,7 +73,7 @@ public class BaseServer implements Server {
                             // TODO: 2023/12/24 预留编解码，需要实现自定义协议
                                     .addLast(new RpcDecoder())
                                     .addLast(new RpcEncoder())
-                                    .addLast(new RpcProviderHandler(handlerMap));
+                                    .addLast(new RpcProviderHandler(handlerMap, reflectType));
                         }
                     }).option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);

@@ -3,6 +3,7 @@ package com.franksu.rpc.provider.common.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.franksu.rpc.common.helper.RpcServiceHelper;
 import com.franksu.rpc.common.threadPool.ServerThreadPool;
+import com.franksu.rpc.constants.RpcConstants;
 import com.franksu.rpc.protocol.RpcProtocol;
 import com.franksu.rpc.protocol.enumeration.RpcStatus;
 import com.franksu.rpc.protocol.enumeration.RpcType;
@@ -13,6 +14,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import net.sf.cglib.reflect.FastClass;
+import net.sf.cglib.reflect.FastMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +35,14 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
     private final Logger logger = LoggerFactory.getLogger(RpcProviderHandler.class);
 
     private final Map<String, Object> handlerMap;
+    // 调用真实方法所采用类型
+    private final String reflectType;
 
-    public RpcProviderHandler(Map<String, Object> handlerMap) {
+    public RpcProviderHandler(Map<String, Object> handlerMap, String reflectType) {
         this.handlerMap = handlerMap;
+        this.reflectType = reflectType;
     }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcProtocol<RpcRequest> protocol) throws Exception {
         // logger.info("RPC提供者收到的数据为===>>> {}", JSONObject.toJSONString(protocol));
@@ -76,12 +83,13 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
 
     /**
      * 将request中的参数拼接处理，从而从map中获取类实例
+     *
      * @param request RpcRequest
      * @return
      */
     private Object handle(RpcRequest request) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         String serviceKey = RpcServiceHelper.buildServiceKey(request.getClassName(), request.getVersion()
-        , request.getGroup());
+                , request.getGroup());
         Object serviceBean = handlerMap.get(serviceKey);
         if (serviceBean == null) {
             throw new RuntimeException(String.format("service not exist: %s:%s", request.getClassName(), request.getMethodName()));
@@ -112,9 +120,34 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
 
     public Object invokeMethod(Object serviceBean, Class<?> serviceClass, String methodName,
                                Class<?>[] parameterTypes, Object[] parameters) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+        switch (this.reflectType) {
+            case RpcConstants.REFLECT_TYPE_JDK:
+                return this.invokeJDKMethod(serviceBean, serviceClass, methodName, parameterTypes, parameters);
+            case RpcConstants.REFLECT_TYPE_CGLIB:
+                return this.invokeCGLibMethod(serviceBean, serviceClass, methodName, parameterTypes, parameters);
+            default:
+                throw new IllegalArgumentException("not support reflect type");
+
+        }
+
+    }
+
+
+    private Object invokeJDKMethod(Object serviceBean, Class<?> serviceClass, String methodName, Class<?>[] parameterTypes, Object[] parameters) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        // JDK reflect
+        logger.info("use jdk reflect type invoke method...");
         Method method = serviceClass.getMethod(methodName, parameterTypes);
         method.setAccessible(true);
         return method.invoke(serviceBean, parameters);
-
     }
+
+    private Object invokeCGLibMethod(Object serviceBean, Class<?> serviceClass, String methodName, Class<?>[] parameterTypes, Object[] parameters) throws InvocationTargetException {
+        logger.info("use CGLib reflect type invoke method...");
+        FastClass serviceFastClass = FastClass.create(serviceClass);
+        FastMethod serviceFastClassMethod = serviceFastClass.getMethod(methodName, parameterTypes);
+
+        return serviceFastClassMethod.invoke(serviceBean, parameters);
+    }
+
 }
