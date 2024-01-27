@@ -16,6 +16,7 @@
       <module>smrpc-constants</module>
       <module>smrpc-codec</module>
     <module>smrpc-serialization</module>
+    <module>smrpc-consumer</module>
   </modules>
 
   <properties>
