@@ -4,6 +4,9 @@ import com.franksu.rpc.consumer.common.RpcConsumer;
 import com.franksu.rpc.protocol.RpcProtocol;
 import com.franksu.rpc.protocol.header.RpcHeaderFactory;
 import com.franksu.rpc.protocol.request.RpcRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * @BelongsProject: smrpc
@@ -15,9 +18,11 @@ import com.franksu.rpc.protocol.request.RpcRequest;
  */
 public class RpcConsumerHandlerTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(RpcConsumerHandlerTest.class);
     public static void main(String[] args) throws Exception {
         RpcConsumer consumer = RpcConsumer.getInstance();
-        consumer.sendRequest(getRpcRequestProtocol());
+        Object res = consumer.sendRequest(getRpcRequestProtocol());
+        logger.info("服务提供者返回的信息===>>>" + res.toString());
         Thread.sleep(2000);
         consumer.close();
     }
