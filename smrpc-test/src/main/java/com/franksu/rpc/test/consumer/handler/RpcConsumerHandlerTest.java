@@ -1,6 +1,7 @@
 package com.franksu.rpc.test.consumer.handler;
 
 import com.franksu.rpc.consumer.common.RpcConsumer;
+import com.franksu.rpc.consumer.common.future.RpcFuture;
 import com.franksu.rpc.protocol.RpcProtocol;
 import com.franksu.rpc.protocol.header.RpcHeaderFactory;
 import com.franksu.rpc.protocol.request.RpcRequest;
@@ -21,9 +22,8 @@ public class RpcConsumerHandlerTest {
     private static final Logger logger = LoggerFactory.getLogger(RpcConsumerHandlerTest.class);
     public static void main(String[] args) throws Exception {
         RpcConsumer consumer = RpcConsumer.getInstance();
-        Object res = consumer.sendRequest(getRpcRequestProtocol());
-        logger.info("服务提供者返回的信息===>>>" + res.toString());
-        Thread.sleep(2000);
+        RpcFuture rpcFuture = consumer.sendRequest(getRpcRequestProtocol());
+        logger.info("服务提供者返回的信息===>>>" + rpcFuture.get());
         consumer.close();
     }
 

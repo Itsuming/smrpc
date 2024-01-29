@@ -1,6 +1,7 @@
 package com.franksu.rpc.consumer.common.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.franksu.rpc.consumer.common.future.RpcFuture;
 import com.franksu.rpc.protocol.RpcProtocol;
 import com.franksu.rpc.protocol.header.RpcHeader;
 import com.franksu.rpc.protocol.request.RpcRequest;
@@ -35,7 +36,7 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     private SocketAddress remotePeer;
 
     // 存储请求ID与RpcResponse协议的对应关系
-    private Map<Long, RpcProtocol<RpcResponse>> pendingResponse = new ConcurrentHashMap<>();
+    private Map<Long, RpcFuture> pendingRPC = new ConcurrentHashMap<>();
 
     public Channel getChannel() {
         return channel;
@@ -53,7 +54,10 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         logger.info("服务消费者接收到的数据===>>> {}", JSONObject.toJSONString(rpcResponseRpcProtocol));
         RpcHeader header = rpcResponseRpcProtocol.getRpcHeader();
         long requestId = header.getRequestId();
-        pendingResponse.put(requestId, rpcResponseRpcProtocol);
+        RpcFuture rpcFuture = pendingRPC.remove(requestId);
+        if (rpcFuture != null) {
+            rpcFuture.done(rpcResponseRpcProtocol);
+        }
     }
 
     @Override
@@ -71,18 +75,21 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     /**
      * 服务消费者向发送者发送消息
      */
-    public Object sendRequest(RpcProtocol<RpcRequest> protocol) {
+    public RpcFuture sendRequest(RpcProtocol<RpcRequest> protocol) {
         logger.info("服务消费者发送的数据===>>> {}", JSONObject.toJSONString(protocol));
+
+        RpcFuture rpcFuture = this.getRpcFuture(protocol);
         channel.writeAndFlush(protocol);
+        return rpcFuture;
+
+    }
+
+    public RpcFuture getRpcFuture(RpcProtocol<RpcRequest> protocol) {
+        RpcFuture rpcFuture = new RpcFuture(protocol);
         RpcHeader header = protocol.getRpcHeader();
         long requestId = header.getRequestId();
-        // 异步转同步
-        while (true) {
-            RpcProtocol<RpcResponse> responseRpcProtocol = pendingResponse.remove(requestId);
-            if (responseRpcProtocol != null) {
-                return responseRpcProtocol.getBody().getResult();
-            }
-        }
+        pendingRPC.put(requestId, rpcFuture);
+        return rpcFuture;
     }
 
     public void close() {

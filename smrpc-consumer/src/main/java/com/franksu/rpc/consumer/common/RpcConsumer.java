@@ -1,5 +1,6 @@
 package com.franksu.rpc.consumer.common;
 
+import com.franksu.rpc.consumer.common.future.RpcFuture;
 import com.franksu.rpc.consumer.common.handler.RpcConsumerHandler;
 import com.franksu.rpc.consumer.common.initializer.RpcConsumerInitializer;
 import com.franksu.rpc.protocol.RpcProtocol;
@@ -55,7 +56,7 @@ public class RpcConsumer {
         eventLoopGroup.shutdownGracefully();
     }
 
-    public Object sendRequest(RpcProtocol<RpcRequest> protocol) throws Exception {
+    public RpcFuture sendRequest(RpcProtocol<RpcRequest> protocol) throws Exception {
         // TODO: 2024/1/27 暂时写死，后续在引入注册中心时，从注册中心获取
         String serviceAddress = "127.0.0.1";
         int port = 27880;
